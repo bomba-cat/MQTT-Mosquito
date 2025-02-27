@@ -143,8 +143,10 @@ sudo /bin/systemctl start grafana-server.service
 Next up open grafana over the `localhost:3000` address in your browser
 ![img](img/Grafana.png)
 The login credentials are
+
 - admin
 - admin
+
 Next up go to Administration and click on Plugins and Data and then again Data
 Search for the MQTT plugin and install it
 Under connections and Data Sources and in there add these options:
