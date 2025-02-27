@@ -133,4 +133,23 @@ mosquitto_sub -h localhost -t "sensors/#"
 ```
 ## Visualize data with Grafana
 ### Setup
-
+Install grafana oss using these commands
+```bash
+sudo yum install https://dl.grafana.com/enterprise/release/grafana-enterprise-11.5.2-1.x86_64.rpm
+sudo /bin/systemctl daemon-reload
+sudo /bin/systemctl enable grafana-server.service
+sudo /bin/systemctl start grafana-server.service
+```
+Next up open grafana over the `localhost:3000` address in your browser
+![img](img/Grafana.png)
+The login credentials are
+- admin
+- admin
+Next up go to Administration and click on Plugins and Data and then again Data
+Search for the MQTT plugin and install it
+Under connections and Data Sources and in there add these options:
+![img](img/MQTTSettings.png)
+Next up we setup a Dashboard
+![img](img/Visual.png)
+Add a Visualization and then add a topic, you can use # to add all topics and set the time at the top to the last 5 minutes
+![img](img/Dashboard.png)
