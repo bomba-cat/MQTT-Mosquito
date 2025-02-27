@@ -93,7 +93,9 @@ sudo firewall-cmd --reload
 ### Docker
 ```bash
 docker ps # Check for the running mosquitto instance
-docker exec 
+docker exec -it <container_name_or_id> bash
+mosquitto_pub -h localhost -t "test/topic" -m "Hello from Docker!" # Publish a message
+mosquitto_sub -h localhost -t "test/topic" # Subscribe
 ```
 ### Local
 ```bash
