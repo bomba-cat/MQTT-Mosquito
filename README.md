@@ -32,6 +32,7 @@ docker run -d \
   -v "$(pwd)/config":/mosquitto/config \
   -v "$(pwd)/data":/mosquitto/data \
   -v "$(pwd)/log":/mosquitto/log \
+  -v "$(pwd)/data.sh":/bin/data \
   eclipse-mosquitto
 ```
 Additionally we can also add password protection by adding this to our config file
@@ -63,6 +64,7 @@ services:
       - ./config:/mosquitto/config
       - ./data:/mosquitto/data
       - ./log:/mosquitto/log
+      - ./data.sh:/bin/data
     restart: unless-stopped
 ```
 ### Local
@@ -102,3 +104,33 @@ mosquitto_sub -h localhost -t "test/topic" # Subscribe
 mosquitto_pub -h localhost -t "test/topic" -m "Hello from Fedora!" # Publish a message
 mosquitto_sub -h localhost -t "test/topic" # Subscribe
 ```
+### Images
+![img](img/DockerPub.png)
+![img](img/HelloDocker.png)
+### Multi topic
+You can create a `data.sh` and put the following inside
+```bash
+if [ -z "$1" ];
+then
+  echo "Usage: $0 sensor_name"
+  exit 1
+fi
+
+SENSOR_NAME=$1
+TOPIC="sensors/$SENSOR_NAME"
+
+while true;
+do
+  VALUE=$(( RANDOM % 100 )) 
+  mosquitto_pub -h localhost -t "$TOPIC" -m "$VALUE"
+  sleep 1
+done
+```
+also dont forget to bind the local `data.sh` to the `/bin/data` if you are using docker for this: `-v ./data.sh:/bin/data`.
+Lastly you can read the data like this
+```bash
+mosquitto_sub -h localhost -t "sensors/#"
+```
+## Visualize data with Grafana
+### Setup
+
