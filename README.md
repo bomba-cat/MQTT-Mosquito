@@ -28,6 +28,7 @@ Next we'll run a container now
 docker run -d \
   --name mosquitto \
   -p 1883:1883 \
+  -p 9001:9001 \
   -v "$(pwd)/config":/mosquitto/config \
   -v "$(pwd)/data":/mosquitto/data \
   -v "$(pwd)/log":/mosquitto/log \
@@ -57,6 +58,7 @@ services:
     container_name: mosquitto
     ports:
       - "1883:1883"  # MQTT Port
+      - "9001:9001"  # WebSocket Port
     volumes:
       - ./config:/mosquitto/config
       - ./data:/mosquitto/data
