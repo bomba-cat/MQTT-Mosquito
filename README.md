@@ -153,3 +153,6 @@ Next up we setup a Dashboard
 ![img](img/Visual.png)
 Add a Visualization and then add a topic, you can use # to add all topics and set the time at the top to the last 5 minutes
 ![img](img/Dashboard.png)
+
+## How does the System work?
+First we setup a publisher which just delivers data to a broker which subscribed to the publisher and is reading its data. We have also setup Grafana which just subscribes to the publishers and reads its data to visualize it.
