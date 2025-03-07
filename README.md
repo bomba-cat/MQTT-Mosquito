@@ -201,6 +201,10 @@ client.publish(args[i], message);
 This sends the message to the topic defined by `args[i]`, which is one of the sensor data topics passed via the command line.
 ## Usage
 ### Build
-First, you have to build the jar file via `mvn package`
+First, you have to build the jar file via `mvn clean package`
 ### Execute
-Execute the jar file via `java -jar target/Mosquitto-1.0.jar [ToSub] [ToPubArray]`
+Execute the jar file via `java -jar target/Mosquitto-1.0-jar-with-dependencies [URL] [ToSub] [ToPubArray]`
+### Visualized Data
+Command: `java -jar target/Mosquitto-1.0-jar-with-dependencies.jar tcp://localhost:1883 KILL KILL T1 T2 T3 T4 T5 T6 T7 &`
+![img](img/Java-Grafana.png)
+As we can see you can still use Grafana like you are used to. As an example i have created 7 different topics which i was able to visualize with Grafana.
