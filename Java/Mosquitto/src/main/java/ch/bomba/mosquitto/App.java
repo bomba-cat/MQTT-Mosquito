@@ -12,41 +12,38 @@ public class App
 {
   public static void main(String[] args)
   {
-    String TOPIC = args[0];
-    String TYPE = args[1];
-    String ADDRESS = args[2];
-    //System.out.println("bomba.cat moment!");
+    String ADDRESS = args[0];
+    String SUB = args[1];
     
     try 
     {
       MqttClient client = new MqttClient(ADDRESS, UUID.randomUUID().toString());
       
-      if (TYPE.equals("SUB"))
+      client.connect();
+      client.subscribe(SUB, new IMqttMessageListener()
       {
-        client.subscribe("KILL", new IMqttMessageListener()
+        @Override
+        public void messageArrived(String topic, MqttMessage message) throws Exception
         {
-          @Override
-          public void messageArrived(String topic, MqttMessage message) throws Exception
-          {
-            System.out.println("Receoved Topic: " + topic + ", Message: " + message);
-          }
-        });
-      } else if (TYPE.equals("PUB"))
-      {
-        double increment = 0;
-        while (true)
-        {
-          client.connect();
-          Double value = Math.sin(increment);
-          MqttMessage message = new MqttMessage(String.valueOf(value).getBytes());
-          increment = (increment+0.1) % (2*Math.PI);
-          client.publish(TOPIC, message);
-          client.disconnect();
-          Thread.sleep(1000);
+          System.out.println("Received Topic: " + topic + ", Message: " + message);
         }
-      } else
+      });
+      double[] increments = new double[args.length - 2];
+      for (int i = 2; i < args.length; i++)
       {
-        System.out.println("Missing Argument: TYPE, please set this to SUB or PUB");
+        increments[i-2] = i * Math.PI / 4;
+      }
+      while (true)
+      {
+        for (int i = 2; i < args.length; i++)
+        {
+          int idx = i - 2;
+          double value = Math.sin(increments[idx]);
+          MqttMessage message = new MqttMessage(String.valueOf(value).getBytes());
+          increments[idx] = (increments[idx] + 0.1) % (2 * Math.PI);
+          client.publish(args[i], message);
+        }
+        Thread.sleep(1000);
       }
     } catch (Exception ex)
     {
