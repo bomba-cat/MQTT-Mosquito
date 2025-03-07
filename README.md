@@ -158,3 +158,49 @@ Add a Visualization and then add a topic, you can use # to add all topics and se
 
 ## How does the System work?
 First we setup a publisher which just delivers data to a broker which subscribed to the publisher and is reading its data. We have also setup Grafana which just subscribes to the publishers and reads its data to visualize it.
+
+# Java program
+## Before we continue
+For reference, the exact java file can be found [here](Java/Mosquitto/src/main/java/ch/bomba/mosquitto/App.java)
+## What does the code do?
+### Creating the Client
+```java
+MqttClient client = new MqttClient(ADDRESS, UUID.randomUUID().toString());
+```
+This creates an MQTT client that connects to the broker at `ADDRESS`.  
+The second argument is a random client ID to make sure each instance has a unique identity.
+
+### Connecting to the Broker
+```java
+client.connect();
+```
+This establishes the actual connection to the MQTT broker.
+
+### Subscribing to a Topic
+```java
+client.subscribe(SUB, new IMqttMessageListener() {
+    @Override
+    public void messageArrived(String topic, MqttMessage message) throws Exception {
+        System.out.println("Received Topic: " + topic + ", Message: " + message);
+    }
+});
+```
+This subscribes to the topic passed as `SUB` (coming from `args[1]`).  
+Whenever a message is received on this topic, the `messageArrived` function is triggered and logs the topic and message.
+
+### Creating a Message
+```java
+MqttMessage message = new MqttMessage(String.valueOf(value).getBytes());
+```
+This creates a new MQTT message where the payload is a string (in this case, the simulated sensor value) converted to a byte array.
+
+### Publishing a Message
+```java
+client.publish(args[i], message);
+```
+This sends the message to the topic defined by `args[i]`, which is one of the sensor data topics passed via the command line.
+## Usage
+### Build
+First, you have to build the jar file via `mvn package`
+### Execute
+Execute the jar file via `java -jar target/Mosquitto-1.0.jar [ToSub] [ToPubArray]`
